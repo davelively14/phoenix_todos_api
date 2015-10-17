@@ -12,13 +12,13 @@ defmodule PhoenixTodosApi.TodoControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, todo_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    assert json_response(conn, 200)["todos"] == []
   end
 
   test "shows chosen resource", %{conn: conn} do
     todo = Repo.insert! %Todo{}
     conn = get conn, todo_path(conn, :show, todo)
-    assert json_response(conn, 200)["data"] == %{"id" => todo.id,
+    assert json_response(conn, 200)["todo"] == %{"id" => todo.id,
       "title" => todo.title,
       "is_completed" => todo.is_completed}
   end
@@ -29,25 +29,25 @@ defmodule PhoenixTodosApi.TodoControllerTest do
     end
   end
 
-  test "creates and renders resource when data is valid", %{conn: conn} do
+  test "creates and renders resource when todo is valid", %{conn: conn} do
     conn = post conn, todo_path(conn, :create), todo: @valid_attrs
-    assert json_response(conn, 201)["data"]["id"]
+    assert json_response(conn, 201)["todo"]["id"]
     assert Repo.get_by(Todo, @valid_attrs)
   end
 
-  test "does not create resource and renders errors when data is invalid", %{conn: conn} do
+  test "does not create resource and renders errors when todo is invalid", %{conn: conn} do
     conn = post conn, todo_path(conn, :create), todo: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "updates and renders chosen resource when data is valid", %{conn: conn} do
+  test "updates and renders chosen resource when todo is valid", %{conn: conn} do
     todo = Repo.insert! %Todo{}
     conn = put conn, todo_path(conn, :update, todo), todo: @valid_attrs
-    assert json_response(conn, 200)["data"]["id"]
+    assert json_response(conn, 200)["todo"]["id"]
     assert Repo.get_by(Todo, @valid_attrs)
   end
 
-  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
+  test "does not update chosen resource and renders errors when todo is invalid", %{conn: conn} do
     todo = Repo.insert! %Todo{}
     conn = put conn, todo_path(conn, :update, todo), todo: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
